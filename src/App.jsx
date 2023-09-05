@@ -26,15 +26,19 @@ function App() {
   }
 
   const calculateTime = (dateOfBirth) => {
-    let date = moment(dateOfBirth);
-    let mes = moment(date).month();
-    let dia = moment(date).day();
-    let fechaObjetivo = moment({month: mes, day: dia});
-    console.log(fechaObjetivo.format("MM/DD"));
-    let diasRestants = currentDate.diff(fechaObjetivo, "days");
+    let fechaNac = moment(dateOfBirth, "'YYYY-MM-DD')");
+    let proxCumple = moment(currentDate).set({
+      year: currentDate.year(),
+      month: fechaNac.month(),
+      date: fechaNac.date()
+    });
 
-    let text = `${diasRestants} día(s)`;
-    return text;
+    if(currentDate.isAfter(proxCumple)) {
+      proxCumple.add(1, "years");
+    }
+
+    const difference = proxCumple.diff(currentDate, 'days');
+    return difference;
   }
 
   return (
@@ -42,7 +46,7 @@ function App() {
       <div className="container">
         <div className="row">
           <div className="col-12 col-md-6">
-            <div className="card">
+            <div className="card bg-dark text-white rounded">
               <div className="card-body">
                 <form>
                   <div className="form-group">
@@ -81,7 +85,7 @@ function App() {
                   </div>
                   <button
                     type="button"
-                    className="btn btn-primary"
+                    className="btn btn-primary mt-3"
                     onClick={addPerson}
                   >
                     Agregar
@@ -94,11 +98,11 @@ function App() {
             {persons.map((person) => {
               const {id, name, profileImg, dateOfBirth} = person;
               return (
-                <div class="card flex-row flex-wrap">
+                <div class="card flex-row flex-wrap mb-3">
                 <div class="card-header border-0">
                   <img src={profileImg} alt="" />
                 </div>
-                <div class="card-block px-2">
+                <div class="card-block px-2 d-flex flex-column m-5 justify-content-center">
                   <h4 class="card-title">{name}</h4>
                   <p class="card-text">Edad: {calculateAge(dateOfBirth)}</p>
                   <p class="card-text">días para cumpleaños: {calculateTime(dateOfBirth)}</p>
